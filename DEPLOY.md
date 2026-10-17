@@ -17,7 +17,7 @@
 
 ```bash
 git config --global user.name "yzj"
-git config --global user.email "1075305747@qq.com"
+git config --global user.email "you@example.com"
 ```
 
 可以用 `git config --global --list` 检查。
