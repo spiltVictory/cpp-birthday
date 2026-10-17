@@ -1,0 +1,9 @@
+_*
+_chrome/
+_test/
+_shots*/
+_*.mjs
+_check.js
+preview/
+Thumbs.db
+.DS_Store

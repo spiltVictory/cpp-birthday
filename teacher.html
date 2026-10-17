@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#080C1C">
+<meta name="color-scheme" content="dark">
+<meta name="robots" content="noindex,nofollow">
+<title>生日祝福 · 老师工作台</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%23FF6B1A'/%3E%3Ctext x='50' y='66' font-size='44' text-anchor='middle' fill='%23fff' font-family='monospace' font-weight='bold'%3E++%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#080C1C;
+  --ink:#F7F8FF;
+  --muted:#9EA3C6;
+  --dim:#6E759B;
+  --orange:#FF6B1A;
+  --orange-2:#FF9147;
+  --yellow:#FFD166;
+  --mint:#6EF3C5;
+  --blue:#7FB0FF;
+  --pink:#FF5D8F;
+  --line:rgba(255,255,255,.10);
+  --line-soft:rgba(255,255,255,.06);
+  --card:rgba(255,255,255,.045);
+  --sans:"PingFang SC","HarmonyOS Sans SC","MiSans","Microsoft YaHei UI","Microsoft YaHei",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono","SFMono-Regular","Cascadia Code",Consolas,"Liberation Mono",monospace;
+  --r:24px;
+  --safe-b:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--bg);-webkit-text-size-adjust:100%}
+body{
+  margin:0;min-height:100vh;color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;
+  overflow-x:hidden;
+  background:
+    radial-gradient(1000px 600px at 50% -10%,#1B1638 0%,transparent 62%),
+    radial-gradient(800px 500px at 100% 20%,rgba(255,92,20,.08),transparent 60%),
+    linear-gradient(180deg,#0A0E20 0%,#0B0A1E 45%,#080B1A 100%);
+  -webkit-font-smoothing:antialiased;
+  -webkit-tap-highlight-color:transparent;
+}
+::selection{background:rgba(255,145,71,.35);color:#fff}
+button,input,textarea,select{font-family:inherit}
+button{color:inherit}
+a{color:inherit}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bg-glow{position:absolute;border-radius:50%;filter:blur(70px);opacity:.4}
+.g1{width:320px;height:320px;left:-120px;top:40px;background:radial-gradient(circle,#FF6B1A44,transparent 70%)}
+.g2{width:360px;height:360px;right:-150px;top:420px;background:radial-gradient(circle,#7B5CFF33,transparent 70%)}
+.bg-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
+  background-size:44px 44px;
+  -webkit-mask-image:radial-gradient(circle at 50% 0%,#000 0%,rgba(0,0,0,.5) 46%,transparent 78%);
+  mask-image:radial-gradient(circle at 50% 0%,#000 0%,rgba(0,0,0,.5) 46%,transparent 78%);
+}
+
+/* 顶栏 */
+.topbar{
+  position:fixed;left:0;right:0;top:0;z-index:40;
+  display:flex;align-items:center;gap:10px;height:calc(60px + env(safe-area-inset-top,0px));
+  padding:env(safe-area-inset-top,0px) 18px 0;
+  background:rgba(8,11,26,.68);
+  border-bottom:1px solid var(--line-soft);
+  -webkit-backdrop-filter:blur(16px) saturate(140%);backdrop-filter:blur(16px) saturate(140%);
+}
+.brand{display:flex;align-items:center;gap:9px;text-decoration:none;min-width:0}
+.logo{
+  width:32px;height:32px;flex:0 0 32px;border-radius:10px;display:grid;place-items:center;
+  font:800 10px/1 var(--mono);color:#fff;
+  background:linear-gradient(140deg,#FFA25C,#FF5A00);
+  box-shadow:0 6px 18px -6px rgba(255,106,26,.9),inset 0 1px 0 rgba(255,255,255,.4);
+}
+.brand-txt{display:flex;flex-direction:column;line-height:1.15;min-width:0}
+.brand-txt b{font-size:13px;font-weight:800;white-space:nowrap}
+.brand-txt span{font-size:10px;color:var(--dim);white-space:nowrap;letter-spacing:.04em}
+.top-actions{margin-left:auto;display:flex;align-items:center;gap:8px}
+.top-link{
+  display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 12px;border-radius:10px;
+  text-decoration:none;font-size:11.5px;font-weight:700;color:#D9DDF3;
+  background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);
+}
+.top-link:hover{background:rgba(255,255,255,.08)}
+.top-link .dot{width:5px;height:5px;border-radius:50%;background:var(--mint);box-shadow:0 0 8px var(--mint)}
+
+/* 页面 */
+.page{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:calc(92px + env(safe-area-inset-top,0px)) 22px 56px}
+.intro{max-width:700px;margin-bottom:26px}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font:700 10px/1 var(--mono);letter-spacing:.2em;color:var(--mint);
+  padding:7px 11px;border-radius:999px;
+  background:rgba(110,243,197,.07);border:1px solid rgba(110,243,197,.18);
+}
+.eyebrow .blink{width:6px;height:6px;border-radius:50%;background:var(--mint);box-shadow:0 0 10px var(--mint);animation:blink 1.8s ease-in-out infinite}
+.intro h1{
+  margin:16px 0 8px;font-size:clamp(30px,5.4vw,46px);line-height:1.16;font-weight:900;letter-spacing:-.03em;
+  text-wrap:balance;
+}
+.keep{white-space:nowrap}
+.intro h1 em{
+  font-style:normal;
+  background:linear-gradient(96deg,#FFE29A,#FFB13D 40%,#FF7A1A 75%,#FF5D8F);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.intro p{margin:0;font-size:13.5px;line-height:1.8;color:var(--muted)}
+.intro p code{font-family:var(--mono);font-size:.92em;color:#CFE0FF;background:rgba(255,255,255,.06);padding:1px 5px;border-radius:5px}
+.steps{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.steps span{
+  font:600 10px/1 var(--mono);color:#9EA3C6;padding:6px 9px;border-radius:7px;
+  background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.07);letter-spacing:.02em;
+}
+
+.layout{display:grid;grid-template-columns:1.06fr .94fr;gap:20px;align-items:start}
+.card{
+  position:relative;border-radius:var(--r);
+  background:linear-gradient(180deg,rgba(255,255,255,.065),rgba(255,255,255,.025));
+  border:1px solid var(--line);
+  box-shadow:0 30px 70px -46px #000,inset 0 1px 0 rgba(255,255,255,.07);
+}
+.form-card{padding:22px 22px 18px}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.card-head h2{margin:0;font-size:17px;font-weight:900;letter-spacing:-.01em}
+.card-head .num{font:700 10px/1 var(--mono);color:#68709A;letter-spacing:.16em}
+
+.field{margin-bottom:14px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.form-grid .field.full{grid-column:1/-1}
+.field>label{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:6px;font-size:12px;font-weight:700;color:#AEB4D8;letter-spacing:.02em}
+.field>label span{font:500 10px/1.4 var(--mono);color:#68709A;letter-spacing:.02em;font-weight:500}
+.field>label span.req{color:var(--orange-2)}
+.field input,.field textarea,.field select{
+  width:100%;padding:11px 13px;border-radius:11px;
+  background:rgba(255,255,255,.055);
+  border:1px solid rgba(255,255,255,.12);
+  color:#fff;font:600 14px/1.5 var(--sans);
+  outline:none;transition:border-color .2s ease,box-shadow .2s ease,background .2s ease;
+}
+.field input{height:46px}
+.field textarea{min-height:104px;resize:vertical;line-height:1.75;font-weight:500}
+.field input::placeholder,.field textarea::placeholder{color:#5C6488;font-weight:500}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:rgba(255,145,71,.75);box-shadow:0 0 0 3px rgba(255,145,71,.14);background:rgba(255,255,255,.07)}
+.field input[type=date]{font-family:var(--mono);font-size:13px;letter-spacing:.02em}
+.field input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.75);opacity:.75;cursor:pointer}
+.select-wrap{position:relative}
+.select-wrap::after{
+  content:"";position:absolute;right:14px;top:50%;width:7px;height:7px;
+  border-right:1.7px solid #9EA3C6;border-bottom:1.7px solid #9EA3C6;
+  transform:translateY(-70%) rotate(45deg);pointer-events:none;
+}
+.field select{appearance:none;-webkit-appearance:none;padding-right:36px;cursor:pointer}
+.field textarea::-webkit-scrollbar{width:6px}
+.field textarea::-webkit-scrollbar-thumb{background:#2A3255;border-radius:3px}
+.label-action{
+  border:0;background:none;padding:0;cursor:pointer;
+  font:600 10px/1.4 var(--mono);color:var(--orange-2);letter-spacing:.02em;
+}
+.label-action:hover{color:var(--yellow)}
+.counter{margin-top:5px;text-align:right;font:500 9.5px/1.4 var(--mono);color:#5E668C;letter-spacing:.04em}
+.counter.warn{color:var(--yellow)}
+
+.form-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:6px}
+.btn-primary{
+  grid-column:1/-1;position:relative;height:50px;border:0;border-radius:13px;cursor:pointer;overflow:hidden;
+  background:linear-gradient(135deg,#FF9A4D,#FF5A1F 55%,#FF3D6E);
+  color:#fff;font:800 15px/1 var(--sans);letter-spacing:.03em;
+  box-shadow:0 16px 36px -18px rgba(255,95,30,.95),inset 0 1px 0 rgba(255,255,255,.35);
+  transition:transform .15s ease,opacity .2s ease;
+}
+.btn-primary:active{transform:scale(.985)}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed}
+.btn-line{
+  height:44px;border-radius:12px;cursor:pointer;
+  background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.12);
+  color:#E3E7F8;font:700 12.5px/1 var(--sans);
+  transition:background .2s ease,border-color .2s ease,transform .15s ease;
+}
+.btn-line:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2)}
+.btn-line:active{transform:scale(.985)}
+.btn-line:disabled{opacity:.45;cursor:not-allowed}
+.hint{margin:10px 0 0;font-size:10.5px;line-height:1.6;color:var(--yellow);display:flex;align-items:center;gap:6px}
+.hint[hidden]{display:none}
+
+/* 预览 */
+.side{display:flex;flex-direction:column;gap:12px;position:sticky;top:80px}
+.preview-card{overflow:hidden;border-radius:22px;border:1px solid rgba(255,255,255,.11);background:#0B1024;box-shadow:0 30px 70px -46px #000}
+.pv-top{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.07);
+  font:600 9.5px/1 var(--mono);letter-spacing:.14em;color:#6E759B;
+}
+.pv-top .live{display:inline-flex;align-items:center;gap:5px;color:var(--mint);letter-spacing:.1em}
+.pv-top .live::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--mint);box-shadow:0 0 7px var(--mint)}
+.pv-body{
+  position:relative;padding:22px 20px 24px;
+  background:
+    radial-gradient(120% 90% at 50% 0%,rgba(255,122,26,.25),transparent 62%),
+    radial-gradient(80% 60% at 100% 100%,rgba(181,140,255,.1),transparent 60%),
+    #0B1024;
+}
+.pv-code{font:500 9.5px/1.6 var(--mono);color:#7C85AC;letter-spacing:.01em;margin-bottom:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pv-code b{color:var(--yellow);font-weight:500}
+.pv-body h3{
+  margin:0 0 6px;font-size:clamp(24px,5vw,31px);line-height:1.18;font-weight:900;letter-spacing:-.03em;
+}
+.pv-name{
+  background:linear-gradient(100deg,#FFE9A8,#FFC24A 28%,#FF7A1A 66%,#FF4E7E);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  overflow-wrap:anywhere;
+}
+.pv-meta{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 12px}
+.pv-meta span{
+  display:inline-flex;align-items:center;height:24px;padding:0 8px;border-radius:999px;
+  font:600 9.5px/1 var(--mono);color:#C6CBE8;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);
+}
+.pv-meta span:first-child{color:#FFC46B;border-color:rgba(255,205,102,.22);background:rgba(255,209,102,.08)}
+.pv-msg{
+  margin:0;font-size:11.5px;line-height:1.85;color:#AFB4D3;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+}
+.pv-stars{margin-top:16px;font:600 12px/1 var(--mono);letter-spacing:.45em;color:#FFB13D;opacity:.7}
+
+.link-card{padding:16px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.035)}
+.link-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;font:700 10px/1 var(--mono);letter-spacing:.12em;color:#8A92BA}
+.link-head #linkState{color:var(--mint)}
+.link-head #linkState.wait{color:#6E759B}
+.link-row{display:flex;gap:7px}
+#linkOut{
+  flex:1;min-width:0;height:42px;padding:0 11px;border-radius:10px;
+  background:#070B1A;border:1px solid rgba(255,255,255,.11);
+  color:#CFE0FF;font:500 10px/1.4 var(--mono);outline:none;text-overflow:ellipsis;
+}
+#linkOut:focus{border-color:rgba(255,145,71,.6)}
+.copy-mini{
+  flex:0 0 42px;height:42px;border-radius:10px;cursor:pointer;
+  display:grid;place-items:center;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);color:#D9DDF3;
+}
+.copy-mini:hover{background:rgba(255,255,255,.09)}
+.copy-mini:disabled{opacity:.4;cursor:not-allowed}
+.copy-mini svg{width:16px;height:16px}
+.link-note{margin:9px 0 0;font-size:10px;line-height:1.7;color:#7C84AB}
+.local-warn{
+  margin:9px 0 0;padding:8px 10px;border-radius:8px;
+  background:rgba(255,209,102,.08);border:1px solid rgba(255,209,102,.2);
+  font-size:10px;line-height:1.65;color:#E8C97E;
+}
+.local-warn[hidden]{display:none}
+.deploy{
+  padding:0 16px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.025);
+}
+.deploy summary{
+  padding:13px 0;cursor:pointer;list-style:none;
+  font-size:11.5px;font-weight:700;color:#B9BEDA;
+}
+.deploy summary::-webkit-details-marker{display:none}
+.deploy summary::before{content:"＋";display:inline-block;margin-right:7px;color:var(--orange-2);font-weight:800}
+.deploy[open] summary::before{content:"－"}
+.deploy .deploy-body{padding:0 0 14px;font-size:11px;line-height:1.9;color:#9EA3C6}
+.deploy ol{margin:0 0 8px;padding-left:17px}
+.deploy li{margin-bottom:4px}
+.deploy code{font-family:var(--mono);font-size:10px;color:#CFE0FF;background:rgba(255,255,255,.06);padding:1px 4px;border-radius:4px}
+.deploy a{color:var(--orange-2);text-decoration:none;font-weight:700}
+
+.site-foot{
+  position:relative;z-index:1;margin-top:44px;padding:22px 22px calc(26px + var(--safe-b));
+  border-top:1px solid var(--line-soft);text-align:center;
+  font-size:10.5px;line-height:1.9;color:#5E668C;
+}
+.site-foot b{color:#9EA3C6;font-weight:700;font-size:11.5px}
+.toast{
+  position:fixed;left:50%;bottom:calc(22px + var(--safe-b));z-index:90;
+  transform:translate(-50%,18px);opacity:0;pointer-events:none;
+  display:flex;align-items:center;gap:8px;max-width:calc(100vw - 36px);
+  padding:11px 15px;border-radius:14px;
+  background:rgba(18,24,44,.96);border:1px solid rgba(110,243,197,.28);
+  color:#E9FFF8;font:600 12px/1.5 var(--sans);text-align:center;
+  box-shadow:0 18px 40px -18px #000;
+  transition:opacity .25s ease,transform .3s cubic-bezier(.2,1.2,.3,1);
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast .ti{color:var(--mint);font-weight:900}
+
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.intro,.form-card,.side{animation:rise .7s cubic-bezier(.2,.8,.2,1) both}
+.side{animation-delay:.08s}
+
+@media (max-width:900px){
+  .page{padding:calc(86px + env(safe-area-inset-top,0px)) 18px 44px}
+  .layout{grid-template-columns:1fr;gap:16px}
+  .side{position:static}
+  .form-card{padding:19px 18px 16px}
+  .intro h1{font-size:30px}
+  .top-link span{display:none}
+}
+@media (max-width:760px){
+  .form-grid{grid-template-columns:1fr;gap:0}
+}
+@media (max-width:640px){
+  .steps{display:none}
+  .field input{height:48px}
+  .field input,.field textarea,.field select,.field input[type=date]{font-size:16px}
+}
+@media (max-width:380px){
+  .brand-txt span{display:none}
+  .page{padding-left:14px;padding-right:14px}
+  .form-card{padding:17px 15px 14px}
+  .pv-body{padding:18px 16px 20px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true">
+  <div class="bg-glow g1"></div>
+  <div class="bg-glow g2"></div>
+  <div class="bg-grid"></div>
+</div>
+
+<header class="topbar">
+  <a class="brand" href="index.html">
+    <span class="logo" aria-hidden="true">C++</span>
+    <span class="brand-txt"><b>核桃编程</b><span>生日祝福 · 老师工作台</span></span>
+  </a>
+  <div class="top-actions">
+    <a class="top-link" href="index.html" target="_blank" rel="noopener"><span class="dot"></span>示例页<span aria-hidden="true">↗</span></a>
+  </div>
+</header>
+
+<main class="page">
+  <section class="intro">
+    <span class="eyebrow"><span class="blink"></span>TEACHER · WORKBENCH</span>
+    <h1>做一份<em>只属于<span class="keep">这个孩子</span></em>的<span class="keep">生日程序</span></h1>
+    <p>填姓名、生日、目前学习阶段，寄语有默认。生成链接后发给家长，孩子打开就是自己的页面。</p>
+    <div class="steps"><span>① 填姓名</span><span>② 选阶段</span><span>③ 复制链接</span></div>
+  </section>
+
+  <div class="layout">
+    <section class="form-card card">
+      <div class="card-head"><h2>学生信息</h2><span class="num">INPUT · 01</span></div>
+
+      <form id="genForm" autocomplete="off" onsubmit="return false">
+        <div class="form-grid">
+          <div class="field">
+            <label for="name">学生姓名 <span class="req">必填 · 最多 12 字</span></label>
+            <input id="name" type="text" maxlength="12" placeholder="例如：李小明" enterkeyhint="next">
+          </div>
+
+          <div class="field">
+            <label for="bday">生日 <span>孩子过生日的那一天</span></label>
+            <input id="bday" type="date">
+          </div>
+
+          <div class="field">
+            <label for="level">目前学习阶段 <span>按班级实际进度选</span></label>
+            <div class="select-wrap">
+              <select id="level" aria-label="目前学习阶段"></select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="teacher">署名 <span>老师 / 家长都可以</span></label>
+            <input id="teacher" type="text" maxlength="16" placeholder="例如：王老师">
+          </div>
+
+          <div class="field full">
+            <label for="msg">寄语 <span><button class="label-action" id="resetMsg" type="button">恢复默认</button></span></label>
+            <textarea id="msg" maxlength="120" rows="4" placeholder="写一句只属于这个孩子的祝福"></textarea>
+            <div class="counter" id="msgCount">0 / 120</div>
+          </div>
+        </div>
+      </form>
+
+      <div class="form-actions">
+        <button class="btn-primary" id="copyLink" type="button">复制专属链接</button>
+        <button class="btn-line" id="openPreview" type="button">打开预览 ↗</button>
+        <button class="btn-line" id="nextStudent" type="button">下一位同学 ↻</button>
+      </div>
+      <p class="hint" id="nameHint" hidden>先填写学生姓名，才能生成链接。</p>
+    </section>
+
+    <aside class="side">
+      <section class="preview-card">
+        <div class="pv-top"><span>学生看到的样子</span><span class="live">LIVE</span></div>
+        <div class="pv-body">
+          <div class="pv-code">cout &lt;&lt; "生日快乐，" &lt;&lt; <b>name</b>;</div>
+          <h3>生日快乐，<b class="pv-name" id="pvName">小小程序员</b>！</h3>
+          <div class="pv-meta">
+            <span id="pvBday">HBD</span>
+            <span id="pvLevel">L4 · 把数据排好队</span>
+          </div>
+          <p class="pv-msg" id="pvMsg"></p>
+          <div class="pv-stars" aria-hidden="true">★ ★ ★ ★ ★</div>
+        </div>
+      </section>
+
+      <section class="link-card">
+        <div class="link-head"><span>专属链接</span><span id="linkState" class="wait">WAITING</span></div>
+        <div class="link-row">
+          <input id="linkOut" type="text" readonly placeholder="填写姓名后自动生成" aria-label="专属链接">
+          <button class="copy-mini" id="copyMini" type="button" aria-label="复制链接" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2.4"/>
+              <path d="M5.5 15V5.5H15"/>
+            </svg>
+          </button>
+        </div>
+        <p class="link-note">链接里带着姓名、生日和阶段。每位同学单独复制，不要把学生名单发到群里。</p>
+        <p class="local-warn" id="localWarn" hidden>当前是本地文件，链接只在本机有效；部署到 GitHub Pages 后会自动变成正式网址。</p>
+      </section>
+
+      <details class="deploy">
+        <summary>第一次用？三步部署</summary>
+        <div class="deploy-body">
+          <ol>
+            <li>GitHub 新建空仓库，把 <code>index.html</code>、<code>teacher.html</code> 推上去。</li>
+            <li>仓库 Settings → Pages → 分支 <code>main</code>、目录 <code>/ (root)</code> → Save。</li>
+            <li>打开 <code>https://用户名.github.io/仓库名/teacher.html</code>。</li>
+          </ol>
+          <p>以后 <code>git push</code> 就自动更新。</p>
+          <p><a href="DEPLOY.md">查看完整部署说明 →</a></p>
+        </div>
+      </details>
+    </aside>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <b>核桃编程 · 信奥科技特长生班</b><br>
+  这个页面只在你的浏览器里生成链接，不保存学生信息。
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"><span class="ti">✓</span><span id="toastText"></span></div>
+
+<script>
+const DEFAULT_TEACHER = "你的 C++ 课导老师";
+const DEFAULT_MSG = "今天不用写代码，只要负责开心。愿你在新的一岁里，遇到再难的题也不慌——像调试程序那样，一步一步，总能找到答案。";
+const LEVELS = [
+  "让电脑开口说话", "学会做选择", "让重复变轻松", "把数据排好队",
+  "开始刷题打怪", "把复杂拆成小块", "三大结构强化", "让数据开口说话",
+  "像程序员一样思考", "把现实写成代码", "复杂规则也不怕", "造一个自己的作品"
+];
+
+const $ = (s, r = document) => r.querySelector(s);
+const nameEl = $("#name");
+const bdayEl = $("#bday");
+const levelEl = $("#level");
+const msgEl = $("#msg");
+const teacherEl = $("#teacher");
+const pvName = $("#pvName");
+const pvBday = $("#pvBday");
+const pvLevel = $("#pvLevel");
+const pvMsg = $("#pvMsg");
+const linkOut = $("#linkOut");
+const linkState = $("#linkState");
+const copyLink = $("#copyLink");
+const copyMini = $("#copyMini");
+const openPreview = $("#openPreview");
+const nextStudent = $("#nextStudent");
+const resetMsg = $("#resetMsg");
+const msgCount = $("#msgCount");
+const nameHint = $("#nameHint");
+const localWarn = $("#localWarn");
+const toastEl = $("#toast");
+const toastText = $("#toastText");
+
+function todayISO() {
+  const d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+function sanitizeName(v) {
+  return String(v || "").replace(/[<>"'`\\\u0000-\u001f]/g, "").replace(/\s+/g, " ").trim().slice(0, 12);
+}
+function normalizeBday(v) {
+  const s = String(v || "").trim();
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
+  if (!m) return "";
+  const y = +m[1], mo = +m[2], d = +m[3];
+  const dt = new Date(y, mo - 1, d);
+  if (dt.getFullYear() !== y || dt.getMonth() !== mo - 1 || dt.getDate() !== d) return "";
+  return m[1] + "-" + m[2] + "-" + m[3];
+}
+function shortDate(iso) {
+  return iso ? iso.slice(5).replace("-", ".") : "HBD";
+}
+function values() {
+  return {
+    name: sanitizeName(nameEl.value),
+    bday: normalizeBday(bdayEl.value),
+    level: Math.min(12, Math.max(1, parseInt(levelEl.value, 10) || 4)),
+    teacher: teacherEl.value.trim().slice(0, 16),
+    message: msgEl.value.trim().slice(0, 120)
+  };
+}
+function buildURL(v) {
+  if (!v.name) return "";
+  const u = new URL("index.html", location.href);
+  u.searchParams.set("name", v.name);
+  u.searchParams.set("level", String(v.level));
+  if (v.bday) u.searchParams.set("bday", v.bday);
+  if (v.teacher && v.teacher !== DEFAULT_TEACHER) u.searchParams.set("teacher", v.teacher);
+  if (v.message && v.message !== DEFAULT_MSG) u.searchParams.set("msg", v.message);
+  u.hash = "";
+  return u.href;
+}
+
+let toastTimer = null;
+function showToast(msg) {
+  toastText.textContent = msg;
+  toastEl.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2800);
+}
+
+function refresh() {
+  const v = values();
+  const url = buildURL(v);
+  pvName.textContent = v.name || "小小程序员";
+  pvBday.textContent = shortDate(v.bday);
+  pvLevel.textContent = "L" + v.level + " · " + LEVELS[v.level - 1];
+  pvMsg.textContent = v.message || DEFAULT_MSG;
+  linkOut.value = url;
+  linkOut.placeholder = v.name ? "" : "填写姓名后自动生成";
+  linkState.textContent = url ? "READY" : "WAITING";
+  linkState.classList.toggle("wait", !url);
+  copyLink.disabled = !url;
+  copyMini.disabled = !url;
+  openPreview.disabled = !url;
+  nameHint.hidden = !!v.name;
+  const n = msgEl.value.length;
+  msgCount.textContent = n + " / 120";
+  msgCount.classList.toggle("warn", n > 110);
+}
+
+async function copyText(text) {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch (e) {}
+  try {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.cssText = "position:fixed;top:0;left:0;opacity:0;pointer-events:none";
+    document.body.appendChild(ta);
+    ta.select();
+    ta.setSelectionRange(0, ta.value.length);
+    const ok = document.execCommand("copy");
+    ta.remove();
+    return ok;
+  } catch (e) {
+    return false;
+  }
+}
+
+function requireLink() {
+  const v = values();
+  const url = buildURL(v);
+  if (!url) {
+    nameHint.hidden = false;
+    nameEl.focus({preventScroll: false});
+    showToast("先填写学生姓名");
+    return "";
+  }
+  return url;
+}
+
+async function doCopy() {
+  const url = requireLink();
+  if (!url) return;
+  const ok = await copyText(url);
+  if (ok) {
+    showToast(location.protocol === "file:"
+      ? "已复制 · 本地链接只能在本机打开"
+      : "链接已复制，发给家长即可");
+  } else {
+    linkOut.focus();
+    linkOut.select();
+    showToast("复制失败，请长按链接手动复制");
+  }
+}
+
+copyLink.addEventListener("click", doCopy);
+copyMini.addEventListener("click", doCopy);
+openPreview.addEventListener("click", () => {
+  const url = requireLink();
+  if (url) window.open(url, "_blank", "noopener");
+});
+nextStudent.addEventListener("click", () => {
+  nameEl.value = "";
+  bdayEl.value = todayISO();
+  refresh();
+  nameEl.focus({preventScroll: true});
+  showToast("已清空，可以填下一位同学");
+});
+resetMsg.addEventListener("click", () => {
+  msgEl.value = DEFAULT_MSG;
+  refresh();
+});
+
+/* 初始化 */
+LEVELS.forEach((title, i) => {
+  const o = document.createElement("option");
+  o.value = String(i + 1);
+  o.textContent = "L" + (i + 1) + " · " + title;
+  levelEl.appendChild(o);
+});
+levelEl.value = "4";
+bdayEl.value = todayISO();
+teacherEl.value = DEFAULT_TEACHER;
+msgEl.value = DEFAULT_MSG;
+localWarn.hidden = location.protocol !== "file:";
+
+["input", "change"].forEach(evt => {
+  $("#genForm").addEventListener(evt, () => {
+    if (evt === "input" && nameEl.value.length > 12) nameEl.value = nameEl.value.slice(0, 12);
+    refresh();
+  });
+});
+refresh();
+</script>
+</body>
+</html>
