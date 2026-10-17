@@ -852,8 +852,6 @@ body.sheet-open .sheet{transform:none}
   .code{font-size:12.5px;line-height:22px}
   .gutter{font-size:12px;line-height:22px}
   .ide-body{max-height:364px}
-  .outro-actions{grid-template-columns:1fr 1fr}
-  .outro-actions .btn-solid{grid-column:1/-1}
   .sheet{left:50%;right:auto;width:min(560px,100%);transform:translate(-50%,103%);border-radius:24px 24px 0 0}
   body.sheet-open .sheet{transform:translate(-50%,0)}
 }
@@ -905,12 +903,6 @@ body.sheet-open .sheet{transform:none}
         <path d="M11.4 5.4 7.6 8.8H4v6.4h3.6l3.8 3.4V5.4Z"/>
         <g class="wave"><path d="M15 9.4a3.9 3.9 0 0 1 0 5.2"/><path d="M18 6.8a7.8 7.8 0 0 1 0 10.4"/></g>
         <g class="slash"><path d="M15 9.2l6 6M21 9.2l-6 6"/></g>
-      </svg>
-    </button>
-    <button class="icon-btn" id="editBtn" type="button" aria-label="修改姓名和祝福">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0 0-3L17 5a2.1 2.1 0 0 0-3 0L3.5 15.5V20Z"/>
-        <path d="M12.5 6.5l5 5"/>
       </svg>
     </button>
   </div>
@@ -1068,7 +1060,6 @@ body.sheet-open .sheet{transform:none}
         <p class="outro-desc">新的一岁，继续写你想写的程序。<br>下一关，我们课堂上见。</p>
         <div class="outro-actions">
           <button class="btn-line btn-solid" id="copyBtn" type="button">复制这份祝福的链接</button>
-          <button class="btn-line" id="editBtn2" type="button">换一个名字</button>
           <button class="btn-line" id="topBtn" type="button">回到开头 ↑</button>
         </div>
       </div>
@@ -1081,62 +1072,6 @@ body.sheet-open .sheet{transform:none}
   <div>趣味 C++ L1–L12 · 让孩子爱学习、会学习</div>
   <div><code>// birthday_program.exe · for <span data-name>小核桃</span> · 仅供生日祝福</code></div>
 </footer>
-
-<div class="sheet-mask" id="sheetMask"></div>
-
-<aside class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" aria-hidden="true">
-  <div class="sheet-handle" aria-hidden="true"></div>
-  <div class="sheet-head">
-    <div>
-      <h3 id="sheetTitle">定制这份祝福</h3>
-      <p>改完保存，再点「复制专属链接」，就是一份新的生日祝福。</p>
-    </div>
-    <button class="sheet-close" id="sheetClose" type="button" aria-label="关闭">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
-    </button>
-  </div>
-
-  <form id="editForm" autocomplete="off" onsubmit="return false">
-    <div class="field">
-      <label for="fName">学生姓名 <span>会出现在标题、代码和信里</span></label>
-      <input id="fName" name="name" type="text" maxlength="12" placeholder="例如：小核桃" enterkeyhint="done">
-    </div>
-
-    <div class="field">
-      <label for="fBday">生日 <span>显示在首屏、蛋糕和信里</span></label>
-      <input id="fBday" name="bday" type="date">
-    </div>
-
-    <div class="field">
-      <label for="fLevel">当前阶段 <span>L1 – L12</span></label>
-      <div class="slider-row">
-        <input id="fLevel" name="level" type="range" min="1" max="12" step="1">
-        <output id="fLevelOut" for="fLevel">L4</output>
-      </div>
-    </div>
-
-    <div class="field">
-      <label for="fMsg">想说的话 <span>最多 120 字</span></label>
-      <textarea id="fMsg" name="message" maxlength="120" placeholder="写一句只属于这个孩子的祝福"></textarea>
-    </div>
-
-    <div class="field">
-      <label for="fTeacher">署名 <span>老师 / 家长都可以</span></label>
-      <input id="fTeacher" name="teacher" type="text" maxlength="16" placeholder="例如：王老师">
-    </div>
-
-    <p class="sheet-note">
-      <b>可复用：</b>链接里的 <code>?name=</code> 是姓名，<code>?bday=</code> 是生日。每位同学单独点「复制专属链接」即可；
-      本地打开时链接只在本机有效，部署到网上后就能直接发给家长。
-    </p>
-
-    <div class="sheet-actions">
-      <button class="btn-save full" id="saveBtn" type="button">保存并预览</button>
-      <button class="btn-soft" id="copyBtn2" type="button">复制专属链接</button>
-      <button class="btn-soft" id="resetBtn" type="button">恢复默认</button>
-    </div>
-  </form>
-</aside>
 
 <div class="toast" id="toast" role="status" aria-live="polite"><span class="ti">✓</span><span id="toastText"></span></div>
 
@@ -1299,21 +1234,7 @@ const lvList = $("#lvList");
 const wishList = $("#wishList");
 const soundBtn = $("#soundBtn");
 const copyBtn = $("#copyBtn");
-const editBtn = $("#editBtn");
-const editBtn2 = $("#editBtn2");
 const topBtn = $("#topBtn");
-const sheet = $("#sheet");
-const sheetMask = $("#sheetMask");
-const sheetClose = $("#sheetClose");
-const fName = $("#fName");
-const fBday = $("#fBday");
-const fLevel = $("#fLevel");
-const fLevelOut = $("#fLevelOut");
-const fTeacher = $("#fTeacher");
-const fMsg = $("#fMsg");
-const saveBtn = $("#saveBtn");
-const copyBtn2 = $("#copyBtn2");
-const resetBtn = $("#resetBtn");
 const toastEl = $("#toast");
 const toastText = $("#toastText");
 const copyPop = $("#copyPop");
@@ -1656,53 +1577,6 @@ function applyState() {
   requestAnimationFrame(fitSquiggle);
 }
 
-/* ---------- 编辑器 ---------- */
-let sheetOpen = false;
-let lastFocus = null;
-
-function fillForm() {
-  fName.value = state.name;
-  fBday.value = state.bday;
-  fLevel.value = state.level;
-  fLevelOut.textContent = "L" + state.level;
-  fTeacher.value = state.teacher;
-  fMsg.value = state.message;
-}
-
-function openSheet() {
-  fillForm();
-  lastFocus = document.activeElement;
-  sheetOpen = true;
-  document.body.classList.add("sheet-open");
-  sheet.setAttribute("aria-hidden", "false");
-  document.body.style.overflow = "hidden";
-  setTimeout(() => {
-    try { fName.focus({preventScroll: true}); } catch (e) { fName.focus(); }
-    try { fName.select(); } catch (e) {}
-  }, 380);
-}
-
-function closeSheet() {
-  if (!sheetOpen) return;
-  sheetOpen = false;
-  document.body.classList.remove("sheet-open");
-  sheet.setAttribute("aria-hidden", "true");
-  document.body.style.overflow = "";
-  if (lastFocus && lastFocus.focus) {
-    try { lastFocus.focus({preventScroll: true}); } catch (e) {}
-  }
-}
-
-function saveState() {
-  state.name = sanitizeName(fName.value) || CONFIG.name;
-  state.bday = normalizeBday(fBday.value);
-  state.level = parseNum(fLevel.value, CONFIG.level, 1, 12);
-  state.teacher = (fTeacher.value.trim() || CONFIG.teacher).slice(0, 16);
-  state.message = (fMsg.value.trim() || CONFIG.message).slice(0, 120);
-  applyState();
-  syncURL();
-}
-
 function buildShareURL() {
   const u = new URL(location.href);
   u.searchParams.set("name", state.name);
@@ -1715,10 +1589,6 @@ function buildShareURL() {
   else u.searchParams.delete("msg");
   u.hash = "";
   return u.href;
-}
-
-function syncURL() {
-  try { history.replaceState(null, "", buildShareURL()); } catch (e) {}
 }
 
 /* ---------- toast / 复制 ---------- */
@@ -2086,30 +1956,7 @@ runBtn.addEventListener("click", () => {
   runProgram();
 });
 
-editBtn.addEventListener("click", openSheet);
-editBtn2.addEventListener("click", openSheet);
 copyBtn.addEventListener("click", copyShare);
-copyBtn2.addEventListener("click", () => { saveState(); copyShare(); });
-saveBtn.addEventListener("click", () => {
-  saveState();
-  closeSheet();
-  showToast("已更新 · 这份祝福属于 " + state.name);
-  setTimeout(() => {
-    try { window.scrollTo({top: 0, behavior: reduceMotion ? "auto" : "smooth"}); } catch (e) {}
-  }, 260);
-});
-resetBtn.addEventListener("click", () => {
-  state.name = CONFIG.name;
-  state.bday = CONFIG.bday;
-  state.level = CONFIG.level;
-  state.teacher = CONFIG.teacher;
-  state.message = CONFIG.message;
-  fillForm();
-  saveState();
-  showToast("已恢复默认内容");
-});
-sheetClose.addEventListener("click", closeSheet);
-sheetMask.addEventListener("click", closeSheet);
 copyClose.addEventListener("click", closeCopyPop);
 copyPop.addEventListener("click", e => { if (e.target === copyPop) closeCopyPop(); });
 copyRetry.addEventListener("click", async () => {
@@ -2126,20 +1973,13 @@ copyRetry.addEventListener("click", async () => {
 topBtn.addEventListener("click", () => {
   window.scrollTo({top: 0, behavior: reduceMotion ? "auto" : "smooth"});
 });
-fLevel.addEventListener("input", () => {
-  fLevelOut.textContent = "L" + fLevel.value;
-});
 document.addEventListener("keydown", e => {
-  if (e.key === "Escape") {
-    if (!copyPop.hidden) { closeCopyPop(); return; }
-    if (sheetOpen) closeSheet();
-  }
+  if (e.key === "Escape" && !copyPop.hidden) closeCopyPop();
 });
 
 /* ---------- 初始化 ---------- */
 function init() {
   fxResize();
-  fillForm();
   applyState();
   observeReveals();
   onScroll();

@@ -150,6 +150,38 @@ a{color:inherit}
   transform:translateY(-70%) rotate(45deg);pointer-events:none;
 }
 .field select{appearance:none;-webkit-appearance:none;padding-right:36px;cursor:pointer}
+.level-picker{position:relative}
+.level-btn{
+  width:100%;height:46px;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:0 13px;border-radius:11px;cursor:pointer;
+  background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.12);
+  color:#fff;font:600 14px/1.4 var(--sans);text-align:left;
+  transition:border-color .2s ease,box-shadow .2s ease,background .2s ease;
+}
+.level-btn:hover{background:rgba(255,255,255,.07)}
+.level-btn[aria-expanded="true"]{border-color:rgba(255,145,71,.7);box-shadow:0 0 0 3px rgba(255,145,71,.12)}
+.level-btn .chev{flex:0 0 auto;color:#9EA3C6;transition:transform .2s ease}
+.level-btn[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.level-menu{
+  position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:30;
+  max-height:280px;overflow:auto;padding:6px;
+  background:#141A33;border:1px solid rgba(255,255,255,.14);border-radius:13px;
+  box-shadow:0 26px 60px -20px #000,inset 0 1px 0 rgba(255,255,255,.06);
+  scrollbar-width:thin;scrollbar-color:#2A3255 transparent;
+}
+.level-menu[hidden]{display:none}
+.level-menu.up{top:auto;bottom:calc(100% + 6px)}
+.level-menu::-webkit-scrollbar{width:6px}
+.level-menu::-webkit-scrollbar-thumb{background:#2A3255;border-radius:3px}
+.level-opt{
+  display:flex;align-items:baseline;gap:9px;width:100%;padding:9px 10px;
+  border:0;border-radius:8px;background:none;cursor:pointer;text-align:left;
+  color:#C6CBE8;font:600 12px/1.5 var(--sans);
+}
+.level-opt b{flex:0 0 28px;font:700 10px/1.5 var(--mono);color:#7C85AC}
+.level-opt:hover{background:rgba(255,255,255,.06)}
+.level-opt[aria-selected="true"]{background:rgba(255,145,71,.13);color:#FFE3C9}
+.level-opt[aria-selected="true"] b{color:#FFB380}
 .field textarea::-webkit-scrollbar{width:6px}
 .field textarea::-webkit-scrollbar-thumb{background:#2A3255;border-radius:3px}
 .label-action{
@@ -302,6 +334,7 @@ a{color:inherit}
 @media (max-width:640px){
   .steps{display:none}
   .field input{height:48px}
+  .level-btn{height:48px;font-size:15px}
   .field input,.field textarea,.field select,.field input[type=date]{font-size:16px}
 }
 @media (max-width:380px){
@@ -357,9 +390,14 @@ a{color:inherit}
           </div>
 
           <div class="field">
-            <label for="level">目前学习阶段 <span>按班级实际进度选</span></label>
-            <div class="select-wrap">
-              <select id="level" aria-label="目前学习阶段"></select>
+            <label for="levelBtn">目前学习阶段 <span>按班级实际进度选</span></label>
+            <div class="level-picker" id="levelPicker">
+              <button type="button" class="level-btn" id="levelBtn" aria-haspopup="listbox" aria-expanded="false">
+                <span id="levelLabel">L4 · 把数据排好队</span>
+                <svg class="chev" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+              <div class="level-menu" id="levelMenu" role="listbox" aria-label="目前学习阶段" hidden></div>
+              <input type="hidden" id="level" value="4">
             </div>
           </div>
 
@@ -450,6 +488,10 @@ const $ = (s, r = document) => r.querySelector(s);
 const nameEl = $("#name");
 const bdayEl = $("#bday");
 const levelEl = $("#level");
+const levelBtn = $("#levelBtn");
+const levelLabel = $("#levelLabel");
+const levelMenu = $("#levelMenu");
+const levelPicker = $("#levelPicker");
 const msgEl = $("#msg");
 const teacherEl = $("#teacher");
 const pvName = $("#pvName");
@@ -605,14 +647,65 @@ resetMsg.addEventListener("click", () => {
   refresh();
 });
 
+function setLevel(n, silent) {
+  const lv = Math.min(12, Math.max(1, parseInt(n, 10) || 4));
+  levelEl.value = String(lv);
+  levelLabel.textContent = "L" + lv + " · " + LEVELS[lv - 1];
+  levelMenu.querySelectorAll(".level-opt").forEach(b => {
+    b.setAttribute("aria-selected", b.dataset.lv === String(lv) ? "true" : "false");
+  });
+  if (!silent) refresh();
+}
+
+function toggleLevelMenu(open) {
+  const next = open === undefined ? levelBtn.getAttribute("aria-expanded") !== "true" : open;
+  levelBtn.setAttribute("aria-expanded", next ? "true" : "false");
+  if (next) {
+    const r = levelBtn.getBoundingClientRect();
+    levelMenu.classList.toggle("up", r.bottom + 300 > window.innerHeight);
+  }
+  levelMenu.hidden = !next;
+  if (next) {
+    const sel = levelMenu.querySelector('[aria-selected="true"]');
+    if (sel) sel.scrollIntoView({block: "nearest"});
+  }
+}
+
+levelBtn.addEventListener("click", () => toggleLevelMenu());
+levelBtn.addEventListener("keydown", e => {
+  if (e.key === "ArrowDown") {
+    e.preventDefault();
+    toggleLevelMenu(true);
+  }
+});
+levelMenu.addEventListener("click", e => {
+  const opt = e.target.closest(".level-opt");
+  if (!opt) return;
+  setLevel(Number(opt.dataset.lv));
+  toggleLevelMenu(false);
+  levelBtn.focus({preventScroll: true});
+});
+document.addEventListener("click", e => {
+  if (!levelPicker.contains(e.target)) toggleLevelMenu(false);
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && levelBtn.getAttribute("aria-expanded") === "true") {
+    toggleLevelMenu(false);
+    levelBtn.focus({preventScroll: true});
+  }
+});
+
 /* 初始化 */
 LEVELS.forEach((title, i) => {
-  const o = document.createElement("option");
-  o.value = String(i + 1);
-  o.textContent = "L" + (i + 1) + " · " + title;
-  levelEl.appendChild(o);
+  const b = document.createElement("button");
+  b.type = "button";
+  b.className = "level-opt";
+  b.dataset.lv = String(i + 1);
+  b.setAttribute("role", "option");
+  b.innerHTML = "<b>L" + (i + 1) + "</b><span>" + title + "</span>";
+  levelMenu.appendChild(b);
 });
-levelEl.value = "4";
+setLevel(4, true);
 bdayEl.value = todayISO();
 teacherEl.value = DEFAULT_TEACHER;
 msgEl.value = DEFAULT_MSG;
