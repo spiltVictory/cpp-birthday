@@ -89,6 +89,11 @@ a{color:inherit}
 .stars{position:absolute;inset:0}
 .star{position:absolute;border-radius:50%;background:#fff;opacity:.5;animation:twinkle 4s ease-in-out infinite}
 #fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:70}
+.flash{
+  position:fixed;inset:0;z-index:68;pointer-events:none;opacity:0;
+  background:radial-gradient(circle at 50% 42%,rgba(255,246,214,.65),rgba(255,145,71,.25) 38%,transparent 70%);
+}
+.flash.on{animation:flashBurst .9s ease-out}
 
 /* ============================================================
    2. 顶栏
@@ -368,14 +373,21 @@ a{color:inherit}
 .btn-run:active{transform:scale(.97)}
 .btn-run:disabled{opacity:.65;cursor:default}
 .btn-run .tri{font-size:9px}
+.btn-run.pulse{animation:runPulse 1.1s ease-in-out infinite}
 
 .console{
   margin-top:14px;border-radius:18px;overflow:hidden;
   background:#050817;border:1px solid rgba(110,243,197,.16);
   box-shadow:0 24px 60px -40px #000;
   animation:consoleIn .4s ease both;
+  scroll-margin-top:78px;
+  transition:border-color .4s ease,box-shadow .4s ease;
 }
 .console[hidden]{display:none}
+.console.done{
+  border-color:rgba(110,243,197,.5);
+  box-shadow:0 0 0 1px rgba(110,243,197,.14),0 30px 80px -40px rgba(110,243,197,.4);
+}
 .console-top{
   display:flex;align-items:center;gap:8px;height:38px;padding:0 14px;
   border-bottom:1px solid rgba(255,255,255,.06);
@@ -385,6 +397,13 @@ a{color:inherit}
 .console-top .cn-led{width:6px;height:6px;border-radius:50%;background:var(--mint);box-shadow:0 0 8px var(--mint)}
 .console-top .cn-title{color:#8BE8C6}
 .console-top .cn-close{margin-left:auto;color:#3D4763;font-size:9px;letter-spacing:.1em}
+.cn-progress{height:3px;background:rgba(255,255,255,.05);overflow:hidden}
+.cn-progress i{
+  display:block;height:100%;width:0;
+  background:linear-gradient(90deg,#6EF3C5,#FFD166,#FF6B1A);
+  box-shadow:0 0 12px rgba(255,145,71,.9);
+  transition:width .55s cubic-bezier(.2,.8,.2,1);
+}
 .console-body{
   padding:14px 15px 16px;max-height:400px;overflow:auto;
   font:500 11.5px/1.85 var(--mono);color:#B9C2E8;white-space:pre-wrap;word-break:break-word;
@@ -392,14 +411,15 @@ a{color:inherit}
 }
 .console-body::-webkit-scrollbar{width:6px;height:6px}
 .console-body::-webkit-scrollbar-thumb{background:#23304A;border-radius:3px}
-.console-body .ln{display:block;min-height:1.85em}
+.console-body .ln{display:block;min-height:1.85em;animation:lineIn .3s ease both}
 .console-body .cmd{color:#6B7398}
 .console-body .cmd::before{content:"$ ";color:#3E4566}
-.console-body .amber{color:#FFC46B;font-weight:700}
+.console-body .amber{color:#FFC46B;font-weight:700;text-shadow:0 0 20px rgba(255,196,107,.35)}
 .console-body .mint{color:var(--mint)}
 .console-body .pink{color:#FF8FB2;letter-spacing:.1em}
 .console-body .ok{color:#6EE7B7}
 .console-body .com{color:#4E587E;font-style:italic}
+.console-body .prog{color:#8EA6D6}
 .console-body .cake{color:#FFB13D;font-size:10.5px;line-height:1.35;letter-spacing:.02em}
 .console-body .cursor{display:inline-block;width:6px;height:12px;background:#6EE7B7;vertical-align:-1px;animation:blinkSoft 1s steps(1) infinite}
 
@@ -840,6 +860,18 @@ body.sheet-open .sheet{transform:none}
 @keyframes chipPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,145,71,.35)}50%{box-shadow:0 0 0 4px rgba(255,145,71,0)}}
 @keyframes consoleIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @keyframes wishIn{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes flashBurst{0%{opacity:0}10%{opacity:1}100%{opacity:0}}
+@keyframes lineIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@keyframes runPulse{
+  0%,100%{box-shadow:0 10px 26px -12px rgba(255,107,26,.95),inset 0 1px 0 rgba(255,255,255,.3)}
+  50%{box-shadow:0 0 0 7px rgba(255,145,71,.14),0 14px 34px -10px rgba(255,107,26,1),inset 0 1px 0 rgba(255,255,255,.4)}
+}
+@keyframes ideBoom{
+  0%{transform:scale(1)}
+  22%{transform:scale(1.012) rotate(-.12deg)}
+  55%{transform:scale(.998) rotate(.08deg)}
+  100%{transform:none}
+}
 
 /* ============================================================
    12. 响应式
@@ -891,6 +923,7 @@ body.sheet-open .sheet{transform:none}
 </div>
 
 <canvas id="fx" aria-hidden="true"></canvas>
+<div class="flash" id="flash" aria-hidden="true"></div>
 
 <header class="topbar" id="topbar">
   <a class="brand" href="#top" aria-label="回到顶部">
@@ -941,9 +974,9 @@ body.sheet-open .sheet{transform:none}
       <div class="anim a7">
         <button class="cta" id="heroRun" type="button">
           <span class="tri" aria-hidden="true">▶</span>
-          运行生日程序
+          打开生日程序
         </button>
-        <p class="cta-hint">点一下，看看你的生日程序会输出什么</p>
+        <p class="cta-hint">打开后，亲手按下「运行」，慢慢看</p>
       </div>
     </div>
 
@@ -976,6 +1009,7 @@ body.sheet-open .sheet{transform:none}
 
       <div class="console" id="console" hidden>
         <div class="console-top"><span class="cn-led"></span><span class="cn-title">OUTPUT</span><span>birthday.exe</span><span class="cn-close">▸</span></div>
+        <div class="cn-progress" id="cnProgress" aria-hidden="true"><i></i></div>
         <div class="console-body" id="consoleBody" aria-live="polite"></div>
       </div>
     </div>
@@ -1223,6 +1257,8 @@ const runBtn = $("#runBtn");
 const runStatus = $("#runStatus");
 const consoleEl = $("#console");
 const consoleBody = $("#consoleBody");
+const cnBar = $("#cnProgress i");
+const flashEl = $("#flash");
 const heroRun = $("#heroRun");
 const candlesEl = $("#candles");
 const cakeDots = $("#cakeDots");
@@ -1365,17 +1401,22 @@ function buildOutput() {
     "   ~ 愿望加载完成 ~"
   ].join("\n");
   return [
-    ["g++ birthday.cpp -std=c++17 -O2 -o birthday", "cmd", 300],
-    ["./birthday", "cmd", 380],
-    ["", "", 90],
-    ["生日快乐，" + state.name + "！", "amber", 440],
-    ["★".repeat(state.level), "pink", 260],
-    ["L" + state.level + " · " + lv.title + "，继续加油！", "mint", 320],
-    ["", "", 90],
-    [cakeArt, "cake", 460],
-    ["", "", 90],
-    ["Process finished with exit code 0", "ok", 340],
-    ["// 今天的 bug，全部被快乐覆盖。", "com", 220]
+    ["g++ birthday.cpp -std=c++17 -O2 -o birthday", "cmd", 650, 8],
+    ["  [ 14%] 正在读取生日代码...", "prog", 550, 18],
+    ["  [ 36%] 正在编译 " + lv.title + "...", "prog", 600, 40],
+    ["  [ 62%] 正在注入快乐...", "prog", 600, 64],
+    ["  [ 86%] 正在打包蛋糕...", "prog", 600, 86],
+    ["  [100%] 编译完成，0 个错误", "ok", 800, 100],
+    ["./birthday", "cmd", 700, 100],
+    ["", "", 220, 100],
+    ["生日快乐，" + state.name + "！", "amber", 1000, 100],
+    ["★".repeat(state.level), "pink", 650, 100],
+    ["L" + state.level + " · " + lv.title + "，继续加油！", "mint", 700, 100],
+    ["", "", 220, 100],
+    [cakeArt, "cake", 1000, 100],
+    ["", "", 220, 100],
+    ["Process finished with exit code 0", "ok", 750, 100],
+    ["// 今天的 bug，全部被快乐覆盖。", "com", 350, 100]
   ];
 }
 
@@ -1391,11 +1432,14 @@ function resetRun() {
   runToken++;
   running = false;
   consoleEl.hidden = true;
+  consoleEl.classList.remove("done");
   consoleBody.innerHTML = "";
+  if (cnBar) cnBar.style.width = "0%";
   runBtn.disabled = false;
   runBtn.innerHTML = '<span class="tri">▶</span>运行';
+  runBtn.classList.remove("pulse");
   setStatus("READY", false);
-  ideEl.classList.remove("glow");
+  ideEl.classList.remove("glow", "boomed");
 }
 
 async function runProgram() {
@@ -1404,20 +1448,27 @@ async function runProgram() {
   const token = ++runToken;
   typing.finish();
   consoleEl.hidden = false;
+  consoleEl.classList.remove("done");
   consoleBody.innerHTML = "";
+  if (cnBar) cnBar.style.width = "0%";
   runBtn.disabled = true;
   runBtn.innerHTML = '<span class="tri">···</span>编译中';
+  runBtn.classList.remove("pulse");
   setStatus("COMPILING", true);
   setTimeout(() => {
     if (token !== runToken) return;
-    try { consoleEl.scrollIntoView({behavior: reduceMotion ? "auto" : "smooth", block: "nearest"}); } catch (e) {}
-  }, 420);
+    try { consoleEl.scrollIntoView({behavior: reduceMotion ? "auto" : "smooth", block: "start"}); } catch (e) {}
+  }, 260);
 
   const lines = buildOutput();
   for (let i = 0; i < lines.length; i++) {
-    await sleep(lines[i][2]);
+    const line = lines[i];
+    await sleep(line[2]);
     if (token !== runToken) { running = false; return; }
-    appendConsole(lines[i][0], lines[i][1]);
+    if (cnBar && typeof line[3] === "number") cnBar.style.width = line[3] + "%";
+    if (typeof line[3] === "number" && line[3] < 100) setStatus("COMPILING " + line[3] + "%", true);
+    if (line[0] === "./birthday") setStatus("RUNNING", true);
+    appendConsole(line[0], line[1]);
   }
 
   const cursor = document.createElement("span");
@@ -1427,11 +1478,24 @@ async function runProgram() {
   runBtn.disabled = false;
   runBtn.innerHTML = '<span class="tri">↻</span>再运行';
   setStatus("FINISHED", false);
-  ideEl.classList.add("glow");
+  celebrateRun();
+  setTimeout(() => ideEl.classList.remove("boomed"), 1000);
   setTimeout(() => ideEl.classList.remove("glow"), 2600);
+}
+
+function celebrateRun() {
+  consoleEl.classList.add("done");
+  ideEl.classList.add("glow", "boomed");
   if (soundOn) successSound();
+  if (reduceMotion) return;
+  flashEl.classList.remove("on");
+  void flashEl.offsetWidth;
+  flashEl.classList.add("on");
   const r = consoleEl.getBoundingClientRect();
-  burst(clamp(r.left + r.width / 2, 24, innerWidth - 24), clamp(r.top + 36, 80, innerHeight - 80), 80, {power: 10});
+  burst(clamp(r.left + r.width / 2, 24, innerWidth - 24), clamp(r.top + 50, 80, innerHeight - 80), 150, {power: 12});
+  burst(innerWidth * 0.08, innerHeight * 0.86, 70, {angle: -Math.PI / 3, power: 14, spread: 1.0});
+  burst(innerWidth * 0.92, innerHeight * 0.86, 70, {angle: -Math.PI * 2 / 3, power: 14, spread: 1.0});
+  rain(40);
 }
 
 /* ---------- 蛋糕 ---------- */
@@ -1943,15 +2007,23 @@ window.addEventListener("scroll", onScroll, {passive: true});
 
 /* ---------- 交互绑定 ---------- */
 heroRun.addEventListener("click", () => {
-  maybeAutoSound();
   const target = $("#run");
   if (target) {
     try { target.scrollIntoView({behavior: reduceMotion ? "auto" : "smooth", block: "start"}); } catch (e) {}
   }
-  setTimeout(runProgram, reduceMotion ? 80 : 520);
+  runBtn.classList.add("pulse");
+  setTimeout(() => runBtn.classList.remove("pulse"), 2800);
+  setTimeout(() => {
+    if (reduceMotion) return;
+    const r = runBtn.getBoundingClientRect();
+    if (r.bottom > window.innerHeight - 16 || r.top < 70) {
+      try { runBtn.scrollIntoView({behavior: "smooth", block: "center"}); } catch (e) {}
+    }
+  }, 700);
 });
 
 runBtn.addEventListener("click", () => {
+  runBtn.classList.remove("pulse");
   maybeAutoSound();
   runProgram();
 });
