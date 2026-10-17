@@ -2,12 +2,12 @@
 
 这个项目是纯静态页面：没有后端、没有构建步骤，`index.html` 和 `teacher.html` 放在同一个目录即可。
 
-部署后：
+已经部署好：
 
-- 学生生日页：`https://<你的用户名>.github.io/cpp-birthday/`
-- 老师工作台：`https://<你的用户名>.github.io/cpp-birthday/teacher.html`
+- 学生生日页：https://spiltvictory.github.io/cpp-birthday/
+- 老师工作台：https://spiltvictory.github.io/cpp-birthday/teacher.html
 
-> 这个目录已经执行过 `git init` 和首次提交（作者 `yzj`）。现在只差**一个 GitHub 远程仓库**：建好后 push，再在仓库设置里开启 Pages。
+> 当前仓库已完成 `git init`、首次提交、push，并开启了 Pages。下面是完整流程，换电脑或从零再搭一遍时用；日常更新只需要看第五步。
 
 ---
 
@@ -37,14 +37,14 @@ git config --global user.email "1075305747@qq.com"
 建好后 GitHub 会显示仓库地址，例如：
 
 ```
-https://github.com/你的用户名/cpp-birthday.git
+https://github.com/spiltVictory/cpp-birthday.git
 ```
 
 ---
 
 ## 三、把本地仓库推上去
 
-在项目目录执行（把 `<你的用户名>` 换成你的 GitHub 用户名）：
+项目目录已经配置好 `origin`，日常更新只需要 `git push`。如果是换一台电脑从零开始：
 
 ```bash
 cd C:\harness\cpp-birthday
@@ -75,13 +75,13 @@ git push -u origin main
 5. 等 1–2 分钟，页面上方会出现地址：
 
 ```
-https://<你的用户名>.github.io/cpp-birthday/
+https://spiltvictory.github.io/cpp-birthday/
 ```
 
 测试：
 
-- 学生页：`https://<你的用户名>.github.io/cpp-birthday/`
-- 老师页：`https://<你的用户名>.github.io/cpp-birthday/teacher.html`
+- 学生页：`https://spiltvictory.github.io/cpp-birthday/`
+- 老师页：`https://spiltvictory.github.io/cpp-birthday/teacher.html`
 
 第一次打开老师页，填一位同学的信息，复制链接，手机浏览器打开确认。
 

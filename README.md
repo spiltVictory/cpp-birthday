@@ -2,6 +2,10 @@
 
 给 8–13 岁 C++ 学员做的生日祝福网站，外加一个老师用的生成页。
 
+> 已部署：
+> - 学生页：https://spiltvictory.github.io/cpp-birthday/
+> - 老师页：https://spiltvictory.github.io/cpp-birthday/teacher.html
+
 - **学生页 `index.html`**：手机优先、单文件、无外部依赖；打开就是孩子自己的生日页面。
 - **老师页 `teacher.html`**：填姓名、生日、当前阶段、寄语，生成专属链接，复制发给家长。
 
