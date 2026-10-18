@@ -151,6 +151,11 @@ a{color:inherit}
 }
 .field select{appearance:none;-webkit-appearance:none;padding-right:36px;cursor:pointer}
 .level-picker{position:relative}
+.grade-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.grade-row-label{font:500 9.5px var(--mono);color:#7C84AB;letter-spacing:.06em}
+.grade-toggle{display:inline-flex;padding:2px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)}
+.grade-toggle button{border:0;background:none;color:#8E96BE;font:600 11px/1 var(--sans);padding:6px 9px;border-radius:6px;cursor:pointer;transition:background .2s ease,color .2s ease}
+.grade-toggle button.on{background:rgba(255,145,71,.18);color:#FFDCC4;box-shadow:inset 0 0 0 1px rgba(255,145,71,.35)}
 .level-btn{
   width:100%;height:46px;display:flex;align-items:center;justify-content:space-between;gap:10px;
   padding:0 13px;border-radius:11px;cursor:pointer;
@@ -182,6 +187,11 @@ a{color:inherit}
 .level-opt:hover{background:rgba(255,255,255,.06)}
 .level-opt[aria-selected="true"]{background:rgba(255,145,71,.13);color:#FFE3C9}
 .level-opt[aria-selected="true"] b{color:#FFB380}
+.level-sep{
+  margin:5px 0 3px;padding:7px 10px 3px;
+  border-top:1px solid rgba(255,255,255,.08);
+  font:600 9px/1 var(--mono);letter-spacing:.12em;color:#7C84AB;
+}
 .field textarea::-webkit-scrollbar{width:6px}
 .field textarea::-webkit-scrollbar-thumb{background:#2A3255;border-radius:3px}
 .label-action{
@@ -335,6 +345,7 @@ a{color:inherit}
   .steps{display:none}
   .field input{height:48px}
   .level-btn{height:48px;font-size:15px}
+  .grade-toggle button{font-size:12px;padding:7px 10px}
   .field input,.field textarea,.field select,.field input[type=date]{font-size:16px}
 }
 @media (max-width:380px){
@@ -390,7 +401,14 @@ a{color:inherit}
           </div>
 
           <div class="field">
-            <label for="levelBtn">目前学习阶段 <span>按班级实际进度选</span></label>
+            <label for="levelBtn">目前学习阶段 <span>L13 起高/低年级不同</span></label>
+            <div class="grade-row">
+              <span class="grade-row-label">C3 年级</span>
+              <div class="grade-toggle" role="group" aria-label="C3 年级">
+                <button type="button" class="on" data-grade="low" aria-pressed="true">低年级</button>
+                <button type="button" data-grade="high" aria-pressed="false">高年级</button>
+              </div>
+            </div>
             <div class="level-picker" id="levelPicker">
               <button type="button" class="level-btn" id="levelBtn" aria-haspopup="listbox" aria-expanded="false">
                 <span id="levelLabel">L4 · 把数据排好队</span>
@@ -478,11 +496,19 @@ a{color:inherit}
 <script>
 const DEFAULT_TEACHER = "你的 C++ 课导老师";
 const DEFAULT_MSG = "今天不用写代码，只要负责开心。愿你在新的一岁里，遇到再难的题也不慌——像调试程序那样，一步一步，总能找到答案。";
-const LEVELS = [
+const CORE_LEVELS = [
   "让电脑开口说话", "学会做选择", "让重复变轻松", "把数据排好队",
   "开始刷题打怪", "把复杂拆成小块", "三大结构强化", "让数据开口说话",
   "像程序员一样思考", "把现实写成代码", "复杂规则也不怕", "造一个自己的作品"
 ];
+const C3_LEVELS = {
+  low: ["循环与图形", "模拟与字符串", "枚举与质数", "函数与参数", "递归", "数位与复杂度"],
+  high: ["循环与标记", "因数与质数", "函数与参数", "递归", "数位拆分", "二进制与复杂度"]
+};
+function titlesFor(g) {
+  return CORE_LEVELS.concat(g === "high" ? C3_LEVELS.high : C3_LEVELS.low);
+}
+let grade = "low";
 
 const $ = (s, r = document) => r.querySelector(s);
 const nameEl = $("#name");
@@ -534,7 +560,8 @@ function values() {
   return {
     name: sanitizeName(nameEl.value),
     bday: normalizeBday(bdayEl.value),
-    level: Math.min(12, Math.max(1, parseInt(levelEl.value, 10) || 4)),
+    level: Math.min(18, Math.max(1, parseInt(levelEl.value, 10) || 4)),
+    grade: grade,
     teacher: teacherEl.value.trim().slice(0, 16),
     message: msgEl.value.trim().slice(0, 120)
   };
@@ -544,6 +571,7 @@ function buildURL(v) {
   const u = new URL("index.html", location.href);
   u.searchParams.set("name", v.name);
   u.searchParams.set("level", String(v.level));
+  u.searchParams.set("grade", v.grade);
   if (v.bday) u.searchParams.set("bday", v.bday);
   if (v.teacher && v.teacher !== DEFAULT_TEACHER) u.searchParams.set("teacher", v.teacher);
   if (v.message && v.message !== DEFAULT_MSG) u.searchParams.set("msg", v.message);
@@ -564,7 +592,7 @@ function refresh() {
   const url = buildURL(v);
   pvName.textContent = v.name || "小小程序员";
   pvBday.textContent = shortDate(v.bday);
-  pvLevel.textContent = "L" + v.level + " · " + LEVELS[v.level - 1];
+  pvLevel.textContent = "L" + v.level + " · " + titlesFor(grade)[v.level - 1];
   pvMsg.textContent = v.message || DEFAULT_MSG;
   linkOut.value = url;
   linkOut.placeholder = v.name ? "" : "填写姓名后自动生成";
@@ -647,13 +675,46 @@ resetMsg.addEventListener("click", () => {
   refresh();
 });
 
+function renderLevelMenu() {
+  const titles = titlesFor(grade);
+  levelMenu.innerHTML = "";
+  titles.forEach((title, i) => {
+    if (i === 12) {
+      const sep = document.createElement("div");
+      sep.className = "level-sep";
+      sep.setAttribute("role", "presentation");
+      sep.textContent = "C3 · " + (grade === "high" ? "高年级" : "低年级");
+      levelMenu.appendChild(sep);
+    }
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "level-opt";
+    b.dataset.lv = String(i + 1);
+    b.setAttribute("role", "option");
+    b.innerHTML = "<b>L" + (i + 1) + "</b><span>" + title + "</span>";
+    levelMenu.appendChild(b);
+  });
+}
+
 function setLevel(n, silent) {
-  const lv = Math.min(12, Math.max(1, parseInt(n, 10) || 4));
+  const lv = Math.min(18, Math.max(1, parseInt(n, 10) || 4));
   levelEl.value = String(lv);
-  levelLabel.textContent = "L" + lv + " · " + LEVELS[lv - 1];
+  levelLabel.textContent = "L" + lv + " · " + titlesFor(grade)[lv - 1];
   levelMenu.querySelectorAll(".level-opt").forEach(b => {
     b.setAttribute("aria-selected", b.dataset.lv === String(lv) ? "true" : "false");
   });
+  if (!silent) refresh();
+}
+
+function setGrade(g, silent) {
+  grade = g === "high" ? "high" : "low";
+  document.querySelectorAll("[data-grade]").forEach(b => {
+    const on = b.dataset.grade === grade;
+    b.classList.toggle("on", on);
+    b.setAttribute("aria-pressed", on ? "true" : "false");
+  });
+  renderLevelMenu();
+  setLevel(parseInt(levelEl.value, 10) || 4, true);
   if (!silent) refresh();
 }
 
@@ -694,18 +755,15 @@ document.addEventListener("keydown", e => {
     levelBtn.focus({preventScroll: true});
   }
 });
+document.querySelectorAll("[data-grade]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    setGrade(btn.dataset.grade);
+    toggleLevelMenu(false);
+  });
+});
 
 /* 初始化 */
-LEVELS.forEach((title, i) => {
-  const b = document.createElement("button");
-  b.type = "button";
-  b.className = "level-opt";
-  b.dataset.lv = String(i + 1);
-  b.setAttribute("role", "option");
-  b.innerHTML = "<b>L" + (i + 1) + "</b><span>" + title + "</span>";
-  levelMenu.appendChild(b);
-});
-setLevel(4, true);
+setGrade("low", true);
 bdayEl.value = todayISO();
 teacherEl.value = DEFAULT_TEACHER;
 msgEl.value = DEFAULT_MSG;
