@@ -164,12 +164,6 @@ a{color:inherit}
 }
 .sec-desc{margin:0;font-size:13.5px;line-height:1.8;color:var(--muted)}
 .sec-desc code{font-family:var(--mono);font-size:.92em;color:#C9CEEA;background:rgba(255,255,255,.06);padding:1px 5px;border-radius:5px}
-.grade-tag{
-  display:inline-block;padding:1px 6px;border-radius:5px;
-  background:rgba(255,145,71,.12);color:#FFB380;
-  border:1px solid rgba(255,145,71,.25);
-  font:600 10px/1.6 var(--mono);letter-spacing:.02em;vertical-align:1px;
-}
 
 .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s cubic-bezier(.2,.8,.2,1),transform .7s cubic-bezier(.2,.8,.2,1)}
 .reveal.in{opacity:1;transform:none}
@@ -1056,7 +1050,7 @@ body.sheet-open .sheet{transform:none}
       <div class="sec-head reveal">
         <span class="sec-label">03 / LEVEL UP</span>
         <h2>你的 C++ <em>技能树</em></h2>
-        <p class="sec-desc">从 <code>cout</code> 到 C3，你已经走到了 L<span data-level>4</span> · <span class="grade-tag" data-grade-label>低年级</span>。点开每一关，看看你走过的路。</p>
+        <p class="sec-desc">从 <code>cout</code> 到 C3，你已经走到了 L<span data-level>4</span>。点开每一关，看看你走过的路。</p>
       </div>
 
       <div class="lv-meter reveal">
@@ -1705,7 +1699,6 @@ function applyState() {
   $$("[data-bday-md]").forEach(el => { el.textContent = bdayShort(state.bday); });
   $$("[data-level]").forEach(el => { el.textContent = state.level; });
   $$("[data-level-title]").forEach(el => { el.textContent = LEVELS[state.level - 1].title; });
-  $$("[data-grade-label]").forEach(el => { el.textContent = state.grade === "high" ? "高年级" : "低年级"; });
   $$("[data-teacher]").forEach(el => { el.textContent = state.teacher; });
   $$("[data-message]").forEach(el => { el.textContent = state.message; });
 
